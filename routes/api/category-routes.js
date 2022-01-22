@@ -45,8 +45,9 @@ router.post('/', (req, res) => {
   })
 });
 
-router.put('/:id', (req, res) => {
-  Category.update(
+router.put('/:id', async (req, res) => {
+  try {
+    const catData = await Category.update(
     {
     category_name: req.body.category_name,
     },
@@ -54,30 +55,34 @@ router.put('/:id', (req, res) => {
       where: {
         id: req.params.id,
       }
+    });
+    if(!catData) {
+      res.status(404).json({ message: 'No category found with that ID'})
+      return;
     }
-  )
-  .then((updatedCategory) => {
-    res.json(updatedCategory);
-  })
-  .catch((err) => {
-    res.json(err)
-  })
+    res.status(200).json(catData);
+  } catch(err) {
+    res.status(500).json(err)
+  }
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', async (req, res) => {
   // delete a category by its `id` value
   //error that I can't delete from parent row; foreign key constraint fails 
-  Category.destroy({
+  try {
+    const catData = await Category.destroy({
     where: {
       id: req.params.id,
     },
-  })
-  .then((deleteCategory) => {
-    res.json(deleteCategory);
-  })
-  .catch((err) =>{
-    res.json(err);
-  })
+  });
+  if(!catData) {
+    res.status(404).json({ message: 'No category found with that ID'})
+    return;
+  }
+  res.status(200).json(catData);
+} catch(err) {
+  res.status(500).json(err)
+}
 
 });
 
