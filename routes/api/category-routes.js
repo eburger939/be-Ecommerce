@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const req = require('express/lib/request');
 const { Category, Product } = require('../../models');
 
 // The `/api/categories` endpoint
@@ -45,7 +46,6 @@ router.post('/', (req, res) => {
 });
 
 router.put('/:id', (req, res) => {
-  // update a category by its `id` value
   Category.update(
     {
     category_name: req.body.category_name,
@@ -66,6 +66,19 @@ router.put('/:id', (req, res) => {
 
 router.delete('/:id', (req, res) => {
   // delete a category by its `id` value
+  //error that I can't delete from parent row; foreign key constraint fails 
+  Category.destroy({
+    where: {
+      id: req.params.id,
+    },
+  })
+  .then((deleteCategory) => {
+    res.json(deleteCategory);
+  })
+  .catch((err) =>{
+    res.json(err);
+  })
+
 });
 
 module.exports = router;
