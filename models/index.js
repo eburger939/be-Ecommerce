@@ -7,13 +7,14 @@ const seedProducts = require('../seeds/product-seeds');
 
 // Products belongsTo Category
 Product.belongsTo(Category, {
-  foreignKey: 'category_id'
+  foreignKey: 'category_id',
+  onDelete: 'set null'
 })
 
 // Categories have many Products
 Category.hasMany(Product, {
   foreignKey: 'category_id',
-  onDelete: 'CASCADE'
+  onDelete: 'CASCADE',
 })
 
 // Products belongToMany Tags (through ProductTag)
